@@ -1,9 +1,16 @@
 //to import the required tensorflow,react-webcam,coco-ssd model,hooks dependencies
 import React, { useRef, useState, useEffect } from "react";
+
+//tensorflow models dependency
 import * as tf from "@tensorflow/tfjs";
 import * as cocoSsd from "@tensorflow-models/coco-ssd";
+
+//react-webcam dependency
 import Webcam from "react-webcam";
+
+//utilites to get rectangle boxes
 import { drawRect } from "./Utilities/utilities";
+
 import "./App.css";
 
 
@@ -12,9 +19,9 @@ import "./App.css";
 function App() {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
-
   const [imgSrc, setImgSrc] = useState(null);
 
+  //to get screenshot on button click 
   const capture = React.useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
     setImgSrc(imageSrc);
@@ -35,6 +42,7 @@ function App() {
     }, 10);
   };
 
+  //to get detections
   const detect = async (net) => {
     //to check if video data is available
     if (
@@ -73,14 +81,16 @@ function App() {
     <>
       <div className="App">
 
-          <div>
-            <h1 style={myDesign}>Hello,Welcome to the Object Detection App</h1>
-            <button onClick={capture}>Capture photo</button>
-          </div><br />
+        <div>
+          <h1 style={myDesign}>✨✨✨Hello,Welcome to the Object Detection App with image capture feature ✨✨✨</h1>
+          {/* on click to get screenshot from capture */}
+          <button onClick={capture}>Click me to <em><b>Capture the image</b></em> 📸👌</button>
+        </div><br />
 
-          <div>
-            {imgSrc && (<img src={imgSrc} alt={"screenshot"}/>)}
-          </div>
+        <div>
+          {/* to render the image captured only when available and clicked */}
+          {imgSrc && (<img src={imgSrc} alt={"screenshot"}/>)}
+        </div>
 
         <header className="App-header">
           <Webcam

@@ -2,12 +2,12 @@ export const drawRect = (detections, ctx) =>{
   //to loop through each detectObj
   detections.forEach(detectObj => {
 
-    //to extract boxes and classes
+    //to extract bboxes and classes
     const [x, y, width, height] = detectObj['bbox']; 
     const text = detectObj['class']; 
 
     //to set styling
-    const color = 'Yellow'
+    const color = 'Cyan'
     ctx.strokeStyle = color
     ctx.font = '18px Arial';
     ctx.fillStyle =  color
