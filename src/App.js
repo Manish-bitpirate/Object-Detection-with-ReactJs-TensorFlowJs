@@ -1,9 +1,9 @@
 //to import the required tensorflow,react-webcam,coco-ssd model,hooks dependencies
 import React, { useRef, useState, useEffect } from "react";
 import * as tf from "@tensorflow/tfjs";
-import * as cocossd from "@tensorflow-models/coco-ssd";
+import * as cocoSsd from "@tensorflow-models/coco-ssd";
 import Webcam from "react-webcam";
-// import { drawRect } from "./utilities";
+import { drawRect } from "./Utilities/utilities";
 import "./App.css";
 
 
@@ -13,14 +13,59 @@ function App() {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   
+  const myDesign =  {
+    color: "Blue",
+    padding: "10px",
+    fontFamily: "Sans-Serif",
+  }
+  
+  //to load the coco-ssd model from the 1st render, called from use effect hook
+  const runCocoModel = async () => {
+    const net = await cocoSsd.load();
+    
+    setInterval(() => {
+      detect(net);
+    }, 10);
+  };
+
+  const detect = async (net) => {
+    //to check if video data is available
+    if (
+      typeof webcamRef.current !== "undefined" &&
+      webcamRef.current !== null &&
+      webcamRef.current.video.readyState === 4
+    ) {
+      //to get the Video Properties
+      const video = webcamRef.current.video;
+      const videoWidth = webcamRef.current.video.videoWidth;
+      const videoHeight = webcamRef.current.video.videoHeight;
+
+      //to set video width
+      webcamRef.current.video.width = videoWidth;
+      webcamRef.current.video.height = videoHeight;
+
+      //to set canvas height and width
+      canvasRef.current.width = videoWidth;
+      canvasRef.current.height = videoHeight;
+
+      //to make Detections
+      const obj = await net.detect(video);
+      console.log(obj);
+
+      //to draw the boxes
+      const ctx = canvasRef.current.getContext("2d");
+      drawRect(obj, ctx); 
+    }
+  };
   
   
-  
+  //to call runCocoModel on render
+  useEffect(()=>{runCocoModel()});
   
   return (
     <div className="App">
+        <h1 style={myDesign}>Hello</h1>
       <header className="App-header">
-        <h1>Hello</h1>
         <Webcam
           ref={webcamRef}
           muted={true} 
