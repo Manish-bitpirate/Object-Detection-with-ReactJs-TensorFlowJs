@@ -12,6 +12,13 @@ import "./App.css";
 function App() {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
+
+  const [imgSrc, setImgSrc] = useState(null);
+
+  const capture = React.useCallback(() => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    setImgSrc(imageSrc);
+  }, [webcamRef, setImgSrc]);
   
   const myDesign =  {
     color: "Blue",
@@ -50,7 +57,7 @@ function App() {
 
       //to make Detections
       const obj = await net.detect(video);
-      console.log(obj);
+      // console.log(obj);
 
       //to draw the boxes
       const ctx = canvasRef.current.getContext("2d");
@@ -63,41 +70,54 @@ function App() {
   useEffect(()=>{runCocoModel()});
   
   return (
-    <div className="App">
-        <h1 style={myDesign}>Hello</h1>
-      <header className="App-header">
-        <Webcam
-          ref={webcamRef}
-          muted={true} 
-          style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 0,
-            textAlign: "center",
-            zindex: 9,
-            width: 640,
-            height: 480,
-          }}
-        />
+    <>
+      <div className="App">
 
-        <canvas
-          ref={canvasRef}
-          style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 0,
-            textAlign: "center",
-            zindex: 8,
-            width: 640,
-            height: 480,
-          }}
-        />
-      </header>
-    </div>
+          <div>
+            <h1 style={myDesign}>Hello,Welcome to the Object Detection App</h1>
+            <button onClick={capture}>Capture photo</button>
+          </div><br />
+
+          <div>
+            {imgSrc && (<img src={imgSrc} alt={"screenshot"}/>)}
+          </div>
+
+        <header className="App-header">
+          <Webcam
+            ref={webcamRef}
+            screenshotFormat="image/jpeg"
+            muted={true} 
+            style={{
+              position: "absolute",
+              marginLeft: "auto",
+              marginRight: "auto",
+              left: 0,
+              right: 0,
+              textAlign: "center",
+              zindex: 9,
+              width: 640,
+              height: 480,
+            }}
+          />
+
+          <canvas
+            ref={canvasRef}
+            style={{
+              position: "absolute",
+              marginLeft: "auto",
+              marginRight: "auto",
+              left: 0,
+              right: 0,
+              textAlign: "center",
+              zindex: 8,
+              width: 640,
+              height: 480,
+            }}
+          />
+        </header>
+        
+      </div>
+    </>
   );
 }
 
